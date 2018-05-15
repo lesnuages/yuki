@@ -2,17 +2,25 @@ package parser
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/google/gopacket"
 	"github.com/google/gopacket/pcap"
 )
 
 type Parser struct {
-	Sessions map[uint64]Session
+	CurrentSession uint64
+	Sessions       map[uint64]Session
 }
 
 type Session struct {
-	Packets []gopacket.Packet
+	Packets    []gopacket.Packet
+	Transport  string
+	SourceIP   string
+	DestIP     string
+	SourcePort string
+	DestPort   string
+	TimeStamp  time.Time
 }
 
 func (s *Session) addPacket(p gopacket.Packet) {
@@ -30,13 +38,13 @@ func (p *Parser) createSession(hash uint64) Session {
 	return p.Sessions[hash]
 }
 
-func (p *Parser) Parse(path string) {
+func (p *Parser) Parse(path string) error {
 	var (
 		ok      bool
 		current Session
 	)
 	if handle, err := pcap.OpenOffline(path); err != nil {
-		panic(err)
+		return err
 	} else {
 		packetSource := gopacket.NewPacketSource(handle, handle.LinkType())
 		for packet := range packetSource.Packets() {
@@ -45,6 +53,12 @@ func (p *Parser) Parse(path string) {
 				// New session
 				if current, ok = p.Sessions[hash]; !ok {
 					current = p.createSession(hash)
+					current.SourceIP = packet.NetworkLayer().NetworkFlow().Src().String()
+					current.DestIP = packet.NetworkLayer().NetworkFlow().Dst().String()
+					current.SourcePort = packet.TransportLayer().TransportFlow().Src().String()
+					current.DestPort = packet.TransportLayer().TransportFlow().Dst().String()
+					current.Transport = packet.TransportLayer().LayerType().String()
+					current.TimeStamp = packet.Metadata().Timestamp
 				}
 				// Session already exists
 				current.Packets = append(current.Packets, packet)
@@ -52,6 +66,7 @@ func (p *Parser) Parse(path string) {
 			}
 		}
 	}
+	return nil
 }
 
 func NewParser() *Parser {
