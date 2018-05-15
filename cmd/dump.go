@@ -35,6 +35,7 @@ func writeToPcap(c *grumble.Context) (err error) {
 	for _, packet := range s.Packets {
 		writer.WritePacket(packet.Metadata().CaptureInfo, packet.Data())
 	}
+	fmt.Println("[*] Pcap written to", filepath)
 	return nil
 }
 
