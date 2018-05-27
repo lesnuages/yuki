@@ -53,11 +53,13 @@ func (p *Parser) Parse(path string) error {
 				// New session
 				if current, ok = p.Sessions[hash]; !ok {
 					current = p.createSession(hash)
-					current.SourceIP = packet.NetworkLayer().NetworkFlow().Src().String()
-					current.DestIP = packet.NetworkLayer().NetworkFlow().Dst().String()
-					current.SourcePort = packet.TransportLayer().TransportFlow().Src().String()
-					current.DestPort = packet.TransportLayer().TransportFlow().Dst().String()
-					current.Transport = packet.TransportLayer().LayerType().String()
+					if packet.TransportLayer() != nil {
+						current.SourceIP = packet.NetworkLayer().NetworkFlow().Src().String()
+						current.DestIP = packet.NetworkLayer().NetworkFlow().Dst().String()
+						current.SourcePort = packet.TransportLayer().TransportFlow().Src().String()
+						current.DestPort = packet.TransportLayer().TransportFlow().Dst().String()
+						current.Transport = packet.TransportLayer().LayerType().String()
+					}
 					current.TimeStamp = packet.Metadata().Timestamp
 				}
 				// Session already exists
