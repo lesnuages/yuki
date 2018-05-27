@@ -40,6 +40,16 @@ func init() {
 		Help: "Displays statistics about the current session",
 		Run:  printStats,
 	}
+	back := &grumble.Command{
+		Name: "back",
+		Help: "Return to main menu",
+		Run: func(c *grumble.Context) error {
+			App.SetPrompt("yuki>> ")
+			Parser.CurrentSession = 0
+			return nil
+		},
+	}
 	App.AddCommand(summary)
 	App.AddCommand(stats)
+	App.AddCommand(back)
 }
