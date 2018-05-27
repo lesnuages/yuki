@@ -7,9 +7,10 @@ import (
 
 	"github.com/desertbit/grumble"
 	"github.com/fatih/color"
+	"github.com/lesnuages/yuki/parser"
 )
 
-func findPattern(pattern []byte, format string) {
+func searchPattern(pattern []byte, format string, s parser.Session) []string {
 	var (
 		startIdx int
 		endIdx   int
@@ -17,38 +18,62 @@ func findPattern(pattern []byte, format string) {
 		before   string
 		after    string
 		found    string
+		result   []string
 	)
-	for h, session := range Parser.Sessions {
-		for i, p := range session.Packets {
-			if p.TransportLayer() != nil {
-				if idx := bytes.Index(p.TransportLayer().LayerPayload(), pattern); idx != -1 {
-					startIdx = idx
-					endIdx = idx + len(pattern) + 30
-					if idx-10 > 0 {
-						startIdx = idx - 10
-					}
-					if endIdx > len(p.TransportLayer().LayerPayload()) {
-						endIdx -= 30
-					}
-
-					header = color.BlueString("Session %d - Packet %d: ", h, i)
-					switch format {
-					case "hex":
-						before = color.WhiteString("[...] %x", p.TransportLayer().LayerPayload()[startIdx:idx])
-						found = color.RedString("%x", p.TransportLayer().LayerPayload()[idx:idx+len(pattern)])
-						after = color.WhiteString("%x [...]\n", p.TransportLayer().LayerPayload()[idx+len(pattern):endIdx])
-					case "ascii":
-						before = color.WhiteString("[...] %s", p.TransportLayer().LayerPayload()[startIdx:idx])
-						found = color.RedString("%s", p.TransportLayer().LayerPayload()[idx:idx+len(pattern)])
-						after = color.WhiteString("%s [...]\n", p.TransportLayer().LayerPayload()[idx+len(pattern):endIdx])
-					default:
-						before = color.WhiteString("[...] %s", p.TransportLayer().LayerPayload()[startIdx:idx])
-						found = color.RedString("%s", p.TransportLayer().LayerPayload()[idx:idx+len(pattern)])
-						after = color.WhiteString("%s [...]\n", p.TransportLayer().LayerPayload()[idx+len(pattern):endIdx])
-					}
-					fmt.Printf("%s%s%s%s", header, before, found, after)
+	for i, p := range s.Packets {
+		if p.TransportLayer() != nil {
+			if idx := bytes.Index(p.TransportLayer().LayerPayload(), pattern); idx != -1 {
+				startIdx = idx
+				endIdx = idx + len(pattern) + 30
+				if idx-10 > 0 {
+					startIdx = idx - 10
 				}
+				if endIdx > len(p.TransportLayer().LayerPayload()) {
+					endIdx -= 30
+				}
+
+				header = color.BlueString("[Packet %d]: ", i)
+				switch format {
+				case "hex":
+					before = color.WhiteString("[...] %x", p.TransportLayer().LayerPayload()[startIdx:idx])
+					found = color.RedString("%x", p.TransportLayer().LayerPayload()[idx:idx+len(pattern)])
+					after = color.WhiteString("%x [...]", p.TransportLayer().LayerPayload()[idx+len(pattern):endIdx])
+				case "ascii":
+					before = color.WhiteString("[...] %s", p.TransportLayer().LayerPayload()[startIdx:idx])
+					found = color.RedString("%s", p.TransportLayer().LayerPayload()[idx:idx+len(pattern)])
+					after = color.WhiteString("%s [...]", p.TransportLayer().LayerPayload()[idx+len(pattern):endIdx])
+				default:
+					before = color.WhiteString("[...] %s", p.TransportLayer().LayerPayload()[startIdx:idx])
+					found = color.RedString("%s", p.TransportLayer().LayerPayload()[idx:idx+len(pattern)])
+					after = color.WhiteString("%s [...]", p.TransportLayer().LayerPayload()[idx+len(pattern):endIdx])
+				}
+				result = append(result, fmt.Sprintf("%s%s%s%s", header, before, found, after))
 			}
+		}
+	}
+	return result
+}
+
+func findPattern(pattern []byte, format string) {
+	if Parser.CurrentSession != 0 {
+		if _, ok := Parser.Sessions[Parser.CurrentSession]; ok {
+			printResults(pattern, format, Parser.CurrentSession)
+		}
+	} else {
+		for h, _ := range Parser.Sessions {
+			printResults(pattern, format, h)
+		}
+	}
+}
+
+func printResults(pattern []byte, format string, sid uint64) {
+	headline := color.New(color.FgGreen, color.Bold)
+	session := Parser.Sessions[sid]
+	res := searchPattern(pattern, format, session)
+	if len(res) > 0 {
+		headline.Printf("[*] Session %d\n", sid)
+		for _, r := range res {
+			fmt.Println(r)
 		}
 	}
 }
