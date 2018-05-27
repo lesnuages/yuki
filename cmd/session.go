@@ -44,7 +44,7 @@ func printSessions(filter string) error {
 	return nil
 }
 
-func listSessions(c *grumble.Context) (err error) {
+func sessions(c *grumble.Context) (err error) {
 	var sid uint64
 	if len(c.Args) > 0 {
 		if sid, err = strconv.ParseUint(c.Args[0], 10, 64); err != nil {
@@ -76,7 +76,7 @@ func init() {
 		Name:      "sessions",
 		Help:      "List sessions",
 		AllowArgs: true,
-		Run:       listSessions,
+		Run:       sessions,
 		Completer: completeSessions,
 	}
 	App.AddCommand(sessions)
