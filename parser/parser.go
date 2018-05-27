@@ -53,9 +53,11 @@ func (p *Parser) Parse(path string) error {
 				// New session
 				if current, ok = p.Sessions[hash]; !ok {
 					current = p.createSession(hash)
+					current.SourceIP = packet.NetworkLayer().NetworkFlow().Src().String()
+					current.DestIP = packet.NetworkLayer().NetworkFlow().Dst().String()
+					// Only handle layer 4 datagrams if
+					// there is a layer 4
 					if packet.TransportLayer() != nil {
-						current.SourceIP = packet.NetworkLayer().NetworkFlow().Src().String()
-						current.DestIP = packet.NetworkLayer().NetworkFlow().Dst().String()
 						current.SourcePort = packet.TransportLayer().TransportFlow().Src().String()
 						current.DestPort = packet.TransportLayer().TransportFlow().Dst().String()
 						current.Transport = packet.TransportLayer().LayerType().String()
