@@ -12,12 +12,14 @@ func stream(c *grumble.Context) error {
 	if Parser.CurrentSession != 0 {
 		if session, ok := Parser.Sessions[Parser.CurrentSession]; ok {
 			for idx, packet := range session.Packets {
-				header := color.New(color.FgCyan, color.Bold)
-				header.Printf("[Packet %d]\n", idx)
-				if c.Flags.Bool("string") {
-					fmt.Println(string(packet.Data()[:]))
-				} else {
-					fmt.Println(hex.EncodeToString(packet.Data()))
+				if len(packet.TransportLayer().LayerPayload()) != 0 {
+					header := color.New(color.FgCyan, color.Bold)
+					header.Printf("[Packet %d]\n", idx)
+					if c.Flags.Bool("string") {
+						fmt.Println(string(packet.TransportLayer().LayerPayload()[:]))
+					} else {
+						fmt.Println(hex.EncodeToString(packet.TransportLayer().LayerPayload()))
+					}
 				}
 			}
 		}

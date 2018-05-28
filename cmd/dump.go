@@ -7,12 +7,13 @@ import (
 	"strings"
 
 	"github.com/desertbit/grumble"
+	"github.com/fatih/color"
 	"github.com/google/gopacket/layers"
 	"github.com/google/gopacket/pcapgo"
 	"github.com/lesnuages/yuki/parser"
 )
 
-func writeToPcap(c *grumble.Context) (err error) {
+func dumpToFile(c *grumble.Context, isPcap bool) (err error) {
 	var (
 		file *os.File
 		ok   bool
@@ -22,21 +23,35 @@ func writeToPcap(c *grumble.Context) (err error) {
 		return fmt.Errorf("You must select a session first")
 	}
 	if len(c.Args) == 0 {
-		return fmt.Errorf("You must provide a filepath.")
+		return fmt.Errorf("You must provide a filepath")
 	}
 	filepath := c.Args[0]
 	if file, err = os.Create(filepath); err != nil {
 		return err
 	}
-	writer := pcapgo.NewWriter(file)
-	writer.WriteFileHeader((uint32)(len(s.Packets)), layers.LinkTypeEthernet)
 	defer file.Close()
-
-	for _, packet := range s.Packets {
-		writer.WritePacket(packet.Metadata().CaptureInfo, packet.Data())
+	if isPcap {
+		writer := pcapgo.NewWriter(file)
+		writer.WriteFileHeader((uint32)(len(s.Packets)), layers.LinkTypeEthernet)
+		for _, p := range s.Packets {
+			writer.WritePacket(p.Metadata().CaptureInfo, p.Data())
+		}
+	} else {
+		for _, p := range s.Packets {
+			file.Write(p.TransportLayer().LayerPayload())
+		}
 	}
-	fmt.Println("[*] Pcap written to", filepath)
+	headline := color.New(color.FgGreen, color.Bold)
+	headline.Println("[*] File written to", filepath)
 	return nil
+}
+
+func writeToPcap(c *grumble.Context) (err error) {
+	return dumpToFile(c, true)
+}
+
+func writeToFile(c *grumble.Context) (err error) {
+	return dumpToFile(c, false)
 }
 
 func dirCompleter(prefix string, args []string) []string {
@@ -78,5 +93,13 @@ func init() {
 		Run:       writeToPcap,
 		Completer: dirCompleter,
 	}
+	dump := &grumble.Command{
+		Name:      "dump",
+		Help:      "Dump transport layer data to a file",
+		AllowArgs: true,
+		Run:       writeToFile,
+		Completer: dirCompleter,
+	}
 	App.AddCommand(writePcap)
+	App.AddCommand(dump)
 }

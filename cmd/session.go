@@ -20,8 +20,11 @@ func printSessions(filter string) error {
 		"Source Port",
 		"Destination IP",
 		"Destination Port",
+		"Source Domain",
+		"Destination Domain",
 		"Transport Type",
-		"Timestamp"}
+		"Timestamp",
+	}
 	table.SetHeader(headers)
 	for hash, s := range Parser.Sessions {
 		content := []string{fmt.Sprint(hash),
@@ -29,6 +32,8 @@ func printSessions(filter string) error {
 			s.SourcePort,
 			s.DestIP,
 			s.DestPort,
+			s.DomainSrc,
+			s.DomainDst,
 			s.Transport,
 			s.TimeStamp.Format(time.ANSIC),
 		}

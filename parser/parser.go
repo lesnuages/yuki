@@ -5,12 +5,14 @@ import (
 	"time"
 
 	"github.com/google/gopacket"
+	"github.com/google/gopacket/layers"
 	"github.com/google/gopacket/pcap"
 )
 
 type Parser struct {
 	CurrentSession uint64
 	Sessions       map[uint64]Session
+	Domains        map[string]string
 }
 
 type Session struct {
@@ -20,6 +22,8 @@ type Session struct {
 	DestIP     string
 	SourcePort string
 	DestPort   string
+	DomainSrc  string
+	DomainDst  string
 	TimeStamp  time.Time
 }
 
@@ -50,6 +54,7 @@ func (p *Parser) Parse(path string) error {
 		for packet := range packetSource.Packets() {
 			if networkLayer := packet.NetworkLayer(); networkLayer != nil {
 				hash := networkLayer.NetworkFlow().FastHash()
+				p.getDns(packet)
 				// New session
 				if current, ok = p.Sessions[hash]; !ok {
 					current = p.createSession(hash)
@@ -66,6 +71,12 @@ func (p *Parser) Parse(path string) error {
 				}
 				// Session already exists
 				current.Packets = append(current.Packets, packet)
+				if domain, found := p.Domains[current.SourceIP]; found {
+					current.DomainSrc = domain
+				}
+				if domain, found := p.Domains[current.DestIP]; found {
+					current.DomainDst = domain
+				}
 				p.Sessions[hash] = current
 			}
 		}
@@ -73,8 +84,26 @@ func (p *Parser) Parse(path string) error {
 	return nil
 }
 
+func (p *Parser) getDns(packet gopacket.Packet) {
+	if dnsLayer := packet.Layer(layers.LayerTypeDNS); dnsLayer != nil {
+		dns, _ := dnsLayer.(*layers.DNS)
+		if dns.QR {
+			for _, aa := range dns.Answers {
+				if aa.Type.String() == "A" {
+					p.Domains[aa.IP.String()] = string(aa.Name[:])
+				}
+			}
+		}
+	}
+}
+
+func (p *Parser) getDomain(ip string) {
+
+}
+
 func NewParser() *Parser {
 	return &Parser{
 		Sessions: make(map[uint64]Session),
+		Domains:  make(map[string]string),
 	}
 }
