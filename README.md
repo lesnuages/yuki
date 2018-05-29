@@ -2,7 +2,7 @@
 
 ## Get & Run
 
-Set your `$GOPATH` environment variable and Just run:
+Set your `$GOPATH` environment variable and just run:
 
 ```bash
 $ go get -u github.com/lesnuages/yuki
