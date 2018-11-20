@@ -25,7 +25,7 @@ func stream(c *grumble.Context) error {
 		}
 		return nil
 	}
-	return fmt.Errorf("You need to select a session first.")
+	return fmt.Errorf("you need to select a session first")
 }
 
 func init() {

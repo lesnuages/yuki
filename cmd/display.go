@@ -24,7 +24,7 @@ func printStats(c *grumble.Context) error {
 		table.Append(data)
 		table.Render()
 	} else {
-		return fmt.Errorf("No session selected.")
+		return fmt.Errorf("no session selected")
 	}
 	return nil
 }

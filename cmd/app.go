@@ -6,6 +6,8 @@ import (
 )
 
 var (
+	// App - Global application variable.
+	// Exported to be reachable from every modules
 	App = grumble.New(&grumble.Config{
 		Name:        "yuki",
 		Prompt:      "yuki>> ",
@@ -14,6 +16,7 @@ var (
 			f.String("f", "filepath", "", "Path to PCAP file.")
 		},
 	})
+	// Parser - Global parser to be used by all commands
 	Parser = parser.NewParser()
 )
 

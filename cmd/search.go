@@ -60,7 +60,7 @@ func findPattern(pattern []byte, format string) {
 			printResults(pattern, format, Parser.CurrentSession)
 		}
 	} else {
-		for h, _ := range Parser.Sessions {
+		for h := range Parser.Sessions {
 			printResults(pattern, format, h)
 		}
 	}
@@ -84,7 +84,7 @@ func search(c *grumble.Context) (err error) {
 		format  string
 	)
 	if len(c.Args) < 1 {
-		return fmt.Errorf("You must provide a pattern to search.")
+		return fmt.Errorf("you must provide a pattern to search")
 	}
 	arg := c.Args[0]
 	if c.Flags.Bool("hex") {
