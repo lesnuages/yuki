@@ -33,19 +33,22 @@ func searchPattern(pattern []byte, format string, s parser.Session) []string {
 				}
 
 				header = color.BlueString("[Packet %d]: ", i)
+				payloadBefore := p.TransportLayer().LayerPayload()[startIdx:idx]
+				payloadFound := p.TransportLayer().LayerPayload()[idx : idx+len(pattern)]
+				payloadAfter := p.TransportLayer().LayerPayload()[idx+len(pattern) : endIdx]
 				switch format {
 				case "hex":
-					before = color.WhiteString("[...] %x", p.TransportLayer().LayerPayload()[startIdx:idx])
-					found = color.RedString("%x", p.TransportLayer().LayerPayload()[idx:idx+len(pattern)])
-					after = color.WhiteString("%x [...]", p.TransportLayer().LayerPayload()[idx+len(pattern):endIdx])
+					before = color.WhiteString("[...] %x", payloadBefore)
+					found = color.RedString("%x", payloadFound)
+					after = color.WhiteString("%x [...]", payloadAfter)
 				case "ascii":
-					before = color.WhiteString("[...] %s", p.TransportLayer().LayerPayload()[startIdx:idx])
-					found = color.RedString("%s", p.TransportLayer().LayerPayload()[idx:idx+len(pattern)])
-					after = color.WhiteString("%s [...]", p.TransportLayer().LayerPayload()[idx+len(pattern):endIdx])
+					before = color.WhiteString("[...] %s", payloadBefore)
+					found = color.RedString("%s", payloadFound)
+					after = color.WhiteString("%s [...]", payloadAfter)
 				default:
-					before = color.WhiteString("[...] %s", p.TransportLayer().LayerPayload()[startIdx:idx])
-					found = color.RedString("%s", p.TransportLayer().LayerPayload()[idx:idx+len(pattern)])
-					after = color.WhiteString("%s [...]", p.TransportLayer().LayerPayload()[idx+len(pattern):endIdx])
+					before = color.WhiteString("[...] %s", payloadBefore)
+					found = color.RedString("%s", payloadFound)
+					after = color.WhiteString("%s [...]", payloadAfter)
 				}
 				result = append(result, fmt.Sprintf("%s%s%s%s", header, before, found, after))
 			}
