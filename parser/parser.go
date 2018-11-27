@@ -105,7 +105,9 @@ func (p *Parser) getDNS(packet gopacket.Packet) {
 	}
 }
 
-// GetSession returns the current Session
+// GetSession returns the Session object
+// corresponding to Parser.CurrentSession.
+// Returns an error if no Session object is found.
 func (p *Parser) GetSession() (Session, error) {
 	var (
 		ok      bool
