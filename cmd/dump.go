@@ -87,15 +87,23 @@ func dirCompleter(prefix string, args []string) []string {
 
 func init() {
 	writePcap := &grumble.Command{
-		Name:      "writepcap",
-		Help:      "Export the current session to a pcap file",
+		Name: "writepcap",
+		Help: "Export the current session to a pcap file",
+		LongHelp: `Usage: writepcap FILEPATH
+Write the selected session packets to a new pcap file,
+located at the provided FILEPATH.
+		`,
 		AllowArgs: true,
 		Run:       writeToPcap,
 		Completer: dirCompleter,
 	}
 	dump := &grumble.Command{
-		Name:      "dump",
-		Help:      "Dump transport layer data to a file",
+		Name: "dump",
+		Help: "Dump transport layer data to a file",
+		LongHelp: `Usage: dump FILEPATH
+Write the transport layer data to a new file,
+located at the provided FILEPATH.
+		`,
 		AllowArgs: true,
 		Run:       writeToFile,
 		Completer: dirCompleter,
