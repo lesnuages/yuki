@@ -7,7 +7,6 @@ import (
 	"github.com/desertbit/grumble"
 	"github.com/fatih/color"
 	"github.com/lesnuages/yuki/parser"
-	"github.com/lesnuages/yuki/utils"
 )
 
 func stream(c *grumble.Context) error {
@@ -15,7 +14,7 @@ func stream(c *grumble.Context) error {
 		err     error
 		session parser.Session
 	)
-	if session, err = utils.GetSession(c, Parser); err != nil {
+	if session, err = Parser.GetSession(); err != nil {
 		return err
 	}
 

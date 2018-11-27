@@ -105,6 +105,18 @@ func (p *Parser) getDNS(packet gopacket.Packet) {
 	}
 }
 
+// GetSession returns the current Session
+func (p *Parser) GetSession() (Session, error) {
+	var (
+		ok      bool
+		session Session
+	)
+	if session, ok = p.Sessions[p.CurrentSession]; ok {
+		return session, nil
+	}
+	return session, fmt.Errorf("wrong session selected")
+}
+
 // NewParser returns a new Parser object.
 func NewParser() *Parser {
 	return &Parser{

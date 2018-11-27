@@ -5,12 +5,11 @@ import (
 	"os"
 
 	"github.com/desertbit/grumble"
-	"github.com/lesnuages/yuki/utils"
 	"github.com/olekukonko/tablewriter"
 )
 
 func printSummary(c *grumble.Context) error {
-	if s, err := utils.GetSession(c, Parser); err == nil {
+	if s, err := Parser.GetSession(); err == nil {
 		s.Summary()
 	} else {
 		return err
@@ -19,7 +18,7 @@ func printSummary(c *grumble.Context) error {
 }
 
 func printStats(c *grumble.Context) error {
-	if s, err := utils.GetSession(c, Parser); err == nil {
+	if s, err := Parser.GetSession(); err == nil {
 		header := []string{"Number of packets", "Transport Layer", "Source", "Destination", "Source Port", "Destination Port"}
 		data := []string{fmt.Sprintf("%d", len(s.Packets)), s.Transport, s.SourceIP, s.DestIP, s.SourcePort, s.DestPort}
 		table := tablewriter.NewWriter(os.Stdout)

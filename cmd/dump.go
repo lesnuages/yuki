@@ -11,7 +11,6 @@ import (
 	"github.com/google/gopacket/layers"
 	"github.com/google/gopacket/pcapgo"
 	"github.com/lesnuages/yuki/parser"
-	"github.com/lesnuages/yuki/utils"
 )
 
 func dumpToFile(c *grumble.Context, isPcap bool) (err error) {
@@ -19,7 +18,7 @@ func dumpToFile(c *grumble.Context, isPcap bool) (err error) {
 		file *os.File
 		s    parser.Session
 	)
-	if s, err = utils.GetSession(c, Parser); err != nil {
+	if s, err = Parser.GetSession(); err != nil {
 		return err
 	}
 	if len(c.Args) == 0 {
