@@ -105,10 +105,6 @@ func (p *Parser) getDNS(packet gopacket.Packet) {
 	}
 }
 
-func (p *Parser) getDomain(ip string) {
-
-}
-
 // NewParser returns a new Parser object.
 func NewParser() *Parser {
 	return &Parser{
