@@ -107,7 +107,7 @@ func init() {
 	search := &grumble.Command{
 		Name: "search",
 		Help: "Look for patterns in session packets",
-		LongHelp: `Usage: search [-s | -h] PATTERN
+		LongHelp: `Usage: search [-s | -x] PATTERN
 Looks for PATTERN in all sessions packets.
 Default behaviour is to look for string patterns (-s implied).
 		`,
@@ -115,7 +115,7 @@ Default behaviour is to look for string patterns (-s implied).
 		AllowArgs: true,
 		Flags: func(f *grumble.Flags) {
 			f.Bool("s", "string", true, "ASCII pattern")
-			f.Bool("h", "hex", false, "Hex pattern")
+			f.Bool("x", "hex", false, "Hex pattern")
 		},
 	}
 	App.AddCommand(search)
