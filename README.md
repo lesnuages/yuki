@@ -16,7 +16,7 @@ $ go run yuki.go -f <pcap_filepath>
 
 ## Description
 
-A rewrite of [clipp](https://github.com/lesnuages/clipp) in Go.
+A rewrite of [clipp](https://github.com/lesnuages/clipp) in Go. Supports both PCAP and PCAPNG file formats thanks to [GoPacket](https://github.com/google/gopacket)
 
 ## Features
 
