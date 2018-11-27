@@ -11,16 +11,16 @@ import (
 	"github.com/google/gopacket/layers"
 	"github.com/google/gopacket/pcapgo"
 	"github.com/lesnuages/yuki/parser"
+	"github.com/lesnuages/yuki/utils"
 )
 
 func dumpToFile(c *grumble.Context, isPcap bool) (err error) {
 	var (
 		file *os.File
-		ok   bool
 		s    parser.Session
 	)
-	if s, ok = Parser.Sessions[Parser.CurrentSession]; !ok {
-		return fmt.Errorf("You must select a session first")
+	if s, err = utils.GetSession(c, Parser); err != nil {
+		return err
 	}
 	if len(c.Args) == 0 {
 		return fmt.Errorf("You must provide a filepath")
