@@ -12,7 +12,7 @@ import (
 	"github.com/olekukonko/tablewriter"
 )
 
-func printSessions(filter string) error {
+func printSessions(filter string) {
 	var rawData [][]string
 	table := tablewriter.NewWriter(os.Stdout)
 	headers := []string{"Session ID",
@@ -39,6 +39,7 @@ func printSessions(filter string) error {
 		}
 		rawData = append(rawData, content)
 	}
+	// Sort by timestamp DESC
 	sort.Slice(rawData, func(i, j int) bool {
 		return rawData[i][6] < rawData[j][6]
 	})
@@ -46,7 +47,6 @@ func printSessions(filter string) error {
 		table.AppendBulk(rawData)
 		table.Render()
 	}
-	return nil
 }
 
 func sessions(c *grumble.Context) (err error) {
@@ -60,7 +60,7 @@ func sessions(c *grumble.Context) (err error) {
 			c.App.SetPrompt(fmt.Sprintf("yuki[%d]>> ", sid))
 		}
 	} else {
-		return printSessions("")
+		printSessions("")
 	}
 	return nil
 }
