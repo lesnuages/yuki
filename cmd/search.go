@@ -51,10 +51,8 @@ func searchPattern(pattern []byte, format string, s parser.Session) []string {
 }
 
 func findPattern(pattern []byte, format string) {
-	if Parser.CurrentSession != 0 {
-		if _, ok := Parser.Sessions[Parser.CurrentSession]; ok {
-			printResults(pattern, format, Parser.CurrentSession)
-		}
+	if _, err := Parser.GetSession(); err == nil {
+		printResults(pattern, format, Parser.CurrentSession)
 	} else {
 		for sid := range Parser.Sessions {
 			printResults(pattern, format, sid)
