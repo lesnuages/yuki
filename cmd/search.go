@@ -23,12 +23,10 @@ func searchPattern(pattern []byte, format string, s parser.Session) []string {
 	for i, p := range s.Packets {
 		if p.TransportLayer() != nil {
 			if idx := bytes.Index(p.TransportLayer().LayerPayload(), pattern); idx != -1 {
-				startIdx = idx
-				endIdx = idx + len(pattern) + 30
-				if idx-10 > 0 {
+				if startIdx = idx; idx-10 > 0 {
 					startIdx = idx - 10
 				}
-				if endIdx > len(p.TransportLayer().LayerPayload()) {
+				if endIdx = idx + len(pattern) + 30; endIdx > len(p.TransportLayer().LayerPayload()) {
 					endIdx -= 30
 				}
 
@@ -63,8 +61,8 @@ func findPattern(pattern []byte, format string) {
 			printResults(pattern, format, Parser.CurrentSession)
 		}
 	} else {
-		for h := range Parser.Sessions {
-			printResults(pattern, format, h)
+		for sid := range Parser.Sessions {
+			printResults(pattern, format, sid)
 		}
 	}
 }
