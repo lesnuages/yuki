@@ -19,7 +19,7 @@ var (
 			f.String("s", "sid", "", "Session ID, required by certain commands")
 		},
 	})
-	// Parser - Global parser to be used by all commands
+	// Parser - Global parser to be used by all commands.
 	Parser = parser.NewParser()
 )
 
