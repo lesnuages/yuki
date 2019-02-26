@@ -27,6 +27,7 @@ jobs:
           name: "Publish Release on GitHub"
           command: |
             go get github.com/tcnksm/ghr
+            cd /go/src/github/lesnuages/yuki/
             VERSION=$(./yuki --version) 
             ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_CI_PROJECT_USERNAME} -r ${CIRCLE_CI_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${VERSION} /go/src/github/lesnuages/yuki/
 
