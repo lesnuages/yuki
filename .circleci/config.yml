@@ -4,7 +4,7 @@ executors:
   yuki-builder:
     docker:
       - image: circleci/golang:latest
-    working_directory: /go/src/github.com/lesnuages/
+    working_directory: /go/src/github.com/lesnuages/yuki
 
 jobs:
   build:
@@ -21,7 +21,7 @@ jobs:
       - persist_to_workspace:
           root: /go/src/github.com/lesnuages/
           paths:
-            - ./*
+            - yuki/*
   
   publish-github-release:
     executor: yuki-builder
@@ -34,8 +34,8 @@ jobs:
             sudo apt update && sudo apt install libpcap0.8
             go get github.com/tcnksm/ghr
             cd /go/src/github.com/lesnuages/yuki/
-            VERSION=$(./yuki --version) 
-            ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_CI_PROJECT_USERNAME} -r ${CIRCLE_CI_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${VERSION} /go/src/github.com/lesnuages/yuki/
+            VERSION=$(./yuki/yuki --version) 
+            ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_CI_PROJECT_USERNAME} -r ${CIRCLE_CI_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${VERSION} /go/src/github.com/lesnuages/yuki/yuki/
 
 workflows:
   version: 2.1
