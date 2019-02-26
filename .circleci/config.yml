@@ -35,6 +35,7 @@ jobs:
             go get github.com/tcnksm/ghr
             cd /go/src/github.com/lesnuages/yuki/yuki/
             VERSION=$(/go/src/github.com/lesnuages/yuki/yuki/yuki --version) 
+            echo ${VERSION}
             ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_CI_PROJECT_USERNAME} -r ${CIRCLE_CI_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${VERSION} /go/src/github.com/lesnuages/yuki/yuki/
 
 workflows:
