@@ -1,11 +1,15 @@
 package cmd
 
 import (
+	"fmt"
 	"strconv"
 
 	"github.com/desertbit/grumble"
 	"github.com/lesnuages/yuki/parser"
 )
+
+// YukiVersion - Version
+const YukiVersion = "1.0.0"
 
 var (
 	// App - Global application variable.
@@ -17,6 +21,7 @@ var (
 		Flags: func(f *grumble.Flags) {
 			f.String("f", "filepath", "", "Path to PCAP file.")
 			f.String("s", "sid", "", "Session ID, required by certain commands")
+			f.Bool("v", "version", false, "Show version")
 		},
 	})
 	// Parser - Global parser to be used by all commands
@@ -28,6 +33,11 @@ func init() {
 		err = nil
 		filepath := flags.String("filepath")
 		sessionID := flags.String("sid")
+		version := flags.Bool("version")
+		if version {
+			fmt.Println(YukiVersion)
+			App.Close()
+		}
 		if filepath != "" {
 			if err = Parser.Parse(filepath); err != nil {
 				return err

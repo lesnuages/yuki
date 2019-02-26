@@ -1,9 +1,8 @@
 version: 2
 jobs:
   build:
-    docker:
-        - image: circleci/golang:latest
-
+   docker:
+    - image: circleci/golang:latest
     working_directory: /go/src/github.com/lesnuages/yuki
 
     steps:
@@ -14,3 +13,29 @@ jobs:
       - run: go get github.com/mdlayher/raw
       - run: go get github.com/olekukonko/tablewriter
       - run: go build -o yuki yuki.go
+  
+  publish-github-release:
+    docker:
+      - image: cibuilds/github:0.10
+    steps:
+      - attach_workspace:
+        at: ./artifacts
+      - run:
+          name: "Publish Release on GitHub"
+          command: |
+          VERSION=$(yuki --version)
+          ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_CI_PROJECT_USERNAME} -r ${CIRCLE_CI_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${VERSION} ./artifacts/
+
+workflows:
+  version: 2
+  build_and_publish:
+    jobs:
+      - build
+      - publish-github-release:
+        requires:
+          - build
+        filters:
+          branches:
+            ignore: /.*/
+            tags:
+              only: /^\d+\.\d+\.\d+$/
