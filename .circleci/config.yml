@@ -1,4 +1,4 @@
-version: 2
+version: 2.1
 
 executors:
   yuki-builder:
@@ -9,7 +9,6 @@ executors:
 jobs:
   build:
     executor: yuki-builder
-
     steps:
       - checkout
       - run: sudo apt update && sudo apt install libpcap-dev
@@ -21,7 +20,6 @@ jobs:
   
   publish-github-release:
     executor: yuki-builder
-    
     steps:
       - attach_workspace:
           at: /go/src/github.com/lesnuages/yuki
@@ -33,7 +31,7 @@ jobs:
             ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_CI_PROJECT_USERNAME} -r ${CIRCLE_CI_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${VERSION} /go/src/github/lesnuages/yuki/
 
 workflows:
-  version: 2
+  version: 2.1
   build-and-publish:
     jobs:
       - build
