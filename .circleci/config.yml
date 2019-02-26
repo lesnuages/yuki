@@ -31,6 +31,7 @@ jobs:
       - run:
           name: "Publish Release on GitHub"
           command: |
+            sudo apt get update && sudo apt get install libpcap-dev
             go get github.com/tcnksm/ghr
             cd /go/src/github.com/lesnuages/yuki/
             VERSION=$(./yuki --version) 
