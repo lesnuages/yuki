@@ -1,0 +1,16 @@
+version: 2
+jobs:
+  build:
+    docker:
+        - image: circleci/golang:latest
+
+    workspace_directory: /go/src/github.com/lesnuages/yuki
+
+    steps:
+      - checkout
+      - run: sudo apt update && sudo apt install libpcap-dev
+      - run: go get github.com/desertbit/grumble
+      - run: go get github.com/google/gopacket
+      - run: go get github.com/mdlayher/raw
+      - run: go get github.com/olekukonko/tablewriter
+      - run: go build -o yuki yuki.go
