@@ -19,7 +19,7 @@ jobs:
       - run: go build -o yuki yuki.go
 
       - persist_to_workspace:
-          root: /go/src/github.com/lesnuages/yuki/
+          root: /go/src/github.com/lesnuages/
           paths:
             - yuki
   
