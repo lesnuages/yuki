@@ -17,6 +17,11 @@ jobs:
       - run: go get github.com/mdlayher/raw
       - run: go get github.com/olekukonko/tablewriter
       - run: go build -o yuki yuki.go
+
+      - persist_to_workspace:
+          root: /go/src/github.com/lesnuages/yuki/
+          paths:
+            - yuki
   
   publish-github-release:
     executor: yuki-builder
