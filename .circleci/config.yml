@@ -4,7 +4,7 @@ jobs:
     docker:
         - image: circleci/golang:latest
 
-    workspace_directory: /go/src/github.com/lesnuages/yuki
+    working_directory: /go/src/github.com/lesnuages/yuki
 
     steps:
       - checkout
