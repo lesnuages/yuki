@@ -8,7 +8,7 @@ import (
 	"github.com/lesnuages/yuki/parser"
 )
 
-// YukiVersion - Version
+// YukiVersion - Current version
 const YukiVersion = "1.0.0"
 
 var (
