@@ -77,10 +77,10 @@ func search(c *grumble.Context) (err error) {
 		pattern []byte
 		format  string
 	)
-	if len(c.Args) < 1 {
+	arg := c.Args.String("pattern")
+	if arg == "" {
 		return fmt.Errorf("you must provide a pattern to search")
 	}
-	arg := c.Args[0]
 	if c.Flags.Bool("hex") {
 		if pattern, err = hex.DecodeString(arg); err != nil {
 			return err
@@ -102,11 +102,13 @@ func init() {
 Looks for PATTERN in all sessions packets.
 Default behaviour is to look for string patterns (-s implied).
 		`,
-		Run:       search,
-		AllowArgs: true,
+		Run: search,
 		Flags: func(f *grumble.Flags) {
 			f.Bool("s", "string", true, "ASCII pattern")
 			f.Bool("x", "hex", false, "Hex pattern")
+		},
+		Args: func(a *grumble.Args) {
+			a.String("pattern", "pattern to search for")
 		},
 	}
 	App.AddCommand(search)

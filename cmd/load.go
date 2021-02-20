@@ -1,18 +1,12 @@
 package cmd
 
 import (
-	"fmt"
-
 	"github.com/desertbit/grumble"
 )
 
 func loadFile(c *grumble.Context) error {
-	if len(c.Args) == 0 {
-		return fmt.Errorf("you must provide a filepath")
-	}
-	filePath := c.Args[0]
-	Parser.Parse(filePath)
-	return nil
+	filePath := c.Args.String("filepath")
+	return Parser.Parse(filePath)
 }
 
 func init() {
@@ -22,9 +16,11 @@ func init() {
 		LongHelp: `Usage: load FILEPATH
 Loads the PCAP/PCAPNG file located at FILEPATH and parses it.
 		`,
-		AllowArgs: true,
 		Run:       loadFile,
 		Completer: dirCompleter,
+		Args: func(a *grumble.Args) {
+			a.String("filepath", "path to a PCAP file")
+		},
 	}
 	App.AddCommand(load)
 }

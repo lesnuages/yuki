@@ -21,10 +21,10 @@ func dumpToFile(c *grumble.Context, isPcap bool) (err error) {
 	if s, err = Parser.GetSession(); err != nil {
 		return err
 	}
-	if len(c.Args) == 0 {
+	filepath := c.Args.String("filepath")
+	if filepath == "" {
 		return fmt.Errorf("You must provide a filepath")
 	}
-	filepath := c.Args[0]
 	if file, err = os.Create(filepath); err != nil {
 		return err
 	}
@@ -92,9 +92,11 @@ func init() {
 Write the selected session packets to a new pcap file,
 located at the provided FILEPATH.
 		`,
-		AllowArgs: true,
 		Run:       writeToPcap,
 		Completer: dirCompleter,
+		Args: func(a *grumble.Args) {
+			a.String("filepath", "path to a PCAP file", grumble.Default(""))
+		},
 	}
 	dump := &grumble.Command{
 		Name: "dump",
@@ -103,9 +105,11 @@ located at the provided FILEPATH.
 Write the transport layer data to a new file,
 located at the provided FILEPATH.
 		`,
-		AllowArgs: true,
 		Run:       writeToFile,
 		Completer: dirCompleter,
+		Args: func(a *grumble.Args) {
+			a.String("filepath", "path to a PCAP file", grumble.Default(""))
+		},
 	}
 	App.AddCommand(writePcap)
 	App.AddCommand(dump)

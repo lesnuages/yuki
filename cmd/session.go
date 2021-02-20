@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"os"
 	"sort"
-	"strconv"
 	"strings"
 	"time"
 
@@ -50,11 +49,8 @@ func printSessions(filter string) {
 }
 
 func sessions(c *grumble.Context) (err error) {
-	var sid uint64
-	if len(c.Args) > 0 {
-		if sid, err = strconv.ParseUint(c.Args[0], 10, 64); err != nil {
-			return err
-		}
+	sid := c.Flags.Uint64("session-id")
+	if sid != 0 {
 		if _, ok := Parser.Sessions[sid]; ok {
 			Parser.CurrentSession = sid
 			c.App.SetPrompt(fmt.Sprintf("yuki[%d]>> ", sid))
@@ -80,9 +76,11 @@ func init() {
 	sessions := &grumble.Command{
 		Name:      "sessions",
 		Help:      "List sessions",
-		AllowArgs: true,
 		Run:       sessions,
 		Completer: completeSessions,
+		Flags: func(f *grumble.Flags) {
+			f.Uint64("s", "session-id", 0, "session identifier")
+		},
 	}
 	App.AddCommand(sessions)
 }

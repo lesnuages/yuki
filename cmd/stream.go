@@ -37,11 +37,10 @@ func init() {
 		Name: "stream",
 		Help: "Prints the session stream (see flags for encoding)",
 		Flags: func(f *grumble.Flags) {
-			f.Bool("h", "hex", true, "Print as hexadecimal dump")
+			f.Bool("x", "hex", true, "Print as hexadecimal dump")
 			f.Bool("s", "string", false, "Print as ASCII string")
 		},
-		AllowArgs: true,
-		Run:       stream,
+		Run: stream,
 	}
 	App.AddCommand(stream)
 }

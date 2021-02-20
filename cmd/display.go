@@ -33,16 +33,14 @@ func printStats(c *grumble.Context) error {
 
 func init() {
 	summary := &grumble.Command{
-		Name:      "summary",
-		Help:      "Prints all the session packets as a hexdump (starting at layer 1)",
-		Run:       printSummary,
-		AllowArgs: true,
+		Name: "summary",
+		Help: "Prints all the session packets as a hexdump (starting at layer 1)",
+		Run:  printSummary,
 	}
 	stats := &grumble.Command{
-		Name:      "stats",
-		Help:      "Displays statistics about the current session",
-		Run:       printStats,
-		AllowArgs: true,
+		Name: "stats",
+		Help: "Displays statistics about the current session",
+		Run:  printStats,
 	}
 	back := &grumble.Command{
 		Name: "back",
