@@ -11,8 +11,6 @@ require (
 	github.com/mattn/go-runewidth v0.0.14 // indirect
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/rivo/uniseg v0.4.4 // indirect
-	golang.org/x/crypto v0.6.0
-	golang.org/x/net v0.7.0 // indirect
-	golang.org/x/sys v0.5.0 // indirect
-	golang.org/x/term v0.5.0 // indirect
+	golang.org/x/crypto v0.14.0
+	golang.org/x/net v0.17.0 // indirect
 )
